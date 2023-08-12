@@ -22,9 +22,18 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     Greeting("Android")
+                    startEngine()
                 }
             }
         }
+    }
+}
+
+fun startEngine() {
+    val communicator = Communicator()
+    communicator.start()
+    communicator.processResponses {
+        println(it)
     }
 }
 
