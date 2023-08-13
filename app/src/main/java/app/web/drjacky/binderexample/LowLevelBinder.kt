@@ -6,7 +6,7 @@ import android.os.Parcel
 
 class LowLevelBinder {
 
-    fun read(counter: Int): String {
+    fun read(message: String, counter: Int): String {
         val binder = Binder()
         val data = Parcel.obtain()
         val reply = Parcel.obtain()
@@ -18,7 +18,7 @@ class LowLevelBinder {
         binder.transact(TRANSACTION_READ, data, reply, 0)
 
         // Simulate a delay in the response
-        Thread.sleep(5000)
+        Thread.sleep(2000)
 
         // Simulate reading response from the Parcel
         val response = reply.readString()
@@ -27,7 +27,7 @@ class LowLevelBinder {
         data.recycle()
         reply.recycle()
 
-        return "binder-$counter"
+        return "$message-binder-$counter"
     }
 
     companion object {
