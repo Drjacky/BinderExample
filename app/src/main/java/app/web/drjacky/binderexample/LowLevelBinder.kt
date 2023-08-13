@@ -22,6 +22,7 @@ class LowLevelBinder {
 
         // Simulate reading response from the Parcel
         val response = reply.readString()
+        println("Binder read is done")
 
         // Clean up
         data.recycle()

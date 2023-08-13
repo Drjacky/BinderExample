@@ -12,7 +12,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -28,14 +27,12 @@ import app.web.drjacky.binderexample.utils.collectIn
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.newSingleThreadContext
 
 @OptIn(DelicateCoroutinesApi::class)
 class MainActivity : ComponentActivity() {
     private val thread = newSingleThreadContext("MyThread")
-    private val scope = CoroutineScope(thread)
     private val communicator = Communicator(thread)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,7 +53,7 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                     }
-                    Greeting(modifier, responseResult)
+                    App(modifier, responseResult)
                 }
             }
         }
@@ -67,7 +64,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(
+fun App(
     modifier: Modifier = Modifier,
     result: String,
 ) {
@@ -88,7 +85,7 @@ fun Greeting(
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun AppPreview() {
     val responseResult by remember { mutableStateOf("Waiting for response...") }
 
     BinderExampleTheme {
