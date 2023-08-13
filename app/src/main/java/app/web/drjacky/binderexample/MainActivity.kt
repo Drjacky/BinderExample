@@ -48,20 +48,14 @@ class MainActivity : ComponentActivity() {
                 ) {
                     var responseResult by remember { mutableStateOf("Waiting for response...") }
 
-                    LaunchedEffect(Unit) {
-//                        scope.launch {
+                    LaunchedEffect(Unit) { //Needed for the launch
                         CoroutineScope(Dispatchers.Main).launch {
-                            /*communicator.processResponses {
-                                responseResult = it
-                                println(it)
-                            }*/
                             communicator.processResponses().collectIn(this@MainActivity) {
                                 responseResult = it
                                 println("Response $it received")
                             }
                         }
                     }
-                    println("Response $responseResult displayed")
                     Greeting(modifier, responseResult)
                 }
             }
@@ -77,13 +71,14 @@ fun Greeting(
     modifier: Modifier = Modifier,
     result: String,
 ) {
+    println("Response $result displayed")
     Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Hello $result!",
+            text = result,
             fontSize = 16.sp,
             textAlign = TextAlign.Center,
             color = Color.Black
@@ -94,7 +89,7 @@ fun Greeting(
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    var responseResult by remember { mutableStateOf("Waiting for response...") }
+    val responseResult by remember { mutableStateOf("Waiting for response...") }
 
     BinderExampleTheme {
         Column(
