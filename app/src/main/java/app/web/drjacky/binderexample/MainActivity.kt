@@ -28,15 +28,11 @@ import androidx.compose.ui.unit.sp
 import app.web.drjacky.binderexample.ui.theme.BinderExampleTheme
 import app.web.drjacky.binderexample.utils.collectIn
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.newSingleThreadContext
 
-@OptIn(DelicateCoroutinesApi::class)
 class MainActivity : ComponentActivity() {
-    private val thread = newSingleThreadContext("MyThread")
-    private val communicator = Communicator(thread)
+    private val communicator = Communicator()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {

@@ -1,16 +1,18 @@
 package app.web.drjacky.binderexample
 
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ExecutorCoroutineDispatcher
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.newSingleThreadContext
 
-class Communicator(private val thread: ExecutorCoroutineDispatcher) {
-
+@OptIn(DelicateCoroutinesApi::class)
+class Communicator {
+    private val thread = newSingleThreadContext("MyThread")
     private val lowLevelBinder = LowLevelBinder()
     private val responseFlow = MutableStateFlow<String>("")
 
@@ -32,7 +34,7 @@ class Communicator(private val thread: ExecutorCoroutineDispatcher) {
     }
 
     fun processResponses(): Flow<String> {
-        responseFlow.onStart { delay(1000) }
+        responseFlow.onStart { delay(300) }
         return responseFlow.asStateFlow()
     }
 
