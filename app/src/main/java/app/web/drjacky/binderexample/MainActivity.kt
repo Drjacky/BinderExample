@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -18,7 +20,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import app.web.drjacky.binderexample.ui.theme.BinderExampleTheme
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
@@ -43,17 +47,18 @@ class MainActivity : ComponentActivity() {
                     modifier = modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    var responseResult by remember { mutableStateOf("Waiting for response...") }
+                    val responseList =
+                        remember { mutableStateListOf<String>("Waiting for response...") }
 
                     LaunchedEffect(Unit) { //Needed for the launch
                         CoroutineScope(Dispatchers.Main).launch {
                             communicator.processResponses().collectIn(this@MainActivity) {
-                                responseResult = it
+                                responseList.add(it)
                                 println("Response $it received")
                             }
                         }
                     }
-                    App(modifier, responseResult)
+                    App(modifier, responseList)
                 }
             }
         }
@@ -66,20 +71,22 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun App(
     modifier: Modifier = Modifier,
-    result: String,
+    responseList: SnapshotStateList<String>,
 ) {
-    println("Response $result displayed")
-    Column(
+    LazyColumn(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = result,
-            fontSize = 16.sp,
-            textAlign = TextAlign.Center,
-            color = Color.Black
-        )
+        itemsIndexed(responseList) { i, item ->
+            println("$i - Response $item displayed")
+            Text(
+                text = item,
+                fontSize = 16.sp,
+                textAlign = TextAlign.Center,
+                color = Color.Black
+            )
+        }
     }
 }
 
