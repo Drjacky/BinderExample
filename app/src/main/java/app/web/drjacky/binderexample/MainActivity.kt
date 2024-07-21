@@ -43,9 +43,20 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val responseList =
-                        remember { mutableStateListOf<String>("Waiting for response...") }
+                        remember { mutableStateListOf<String>("") }
 
-                    LaunchedEffect(Unit) { // Needed for the launch
+                    // Dynamic waiting message
+                    LaunchedEffect(Unit) {
+                        var dots = 1
+                        while (true) {
+                            responseList[0] = "Waiting for response" + ".".repeat(dots)
+                            dots = (dots % 3) + 1
+                            delay(500)
+                        }
+                    }
+
+                    // Collect responses from communicator
+                    LaunchedEffect(Unit) {
                         communicator.processResponsesChannel().collectIn(this@MainActivity) {
                             delay(3000)
                             responseList.add(it)
@@ -73,7 +84,6 @@ fun App(
     modifier: Modifier = Modifier,
     responseList: SnapshotStateList<String>,
 ) {
-    println("${responseList.last()} displayed")
     LazyColumn(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
