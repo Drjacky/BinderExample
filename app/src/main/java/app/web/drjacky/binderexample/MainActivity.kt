@@ -46,10 +46,15 @@ class MainActivity : ComponentActivity() {
                         remember { mutableStateListOf<String>("Waiting for response...") }
 
                     LaunchedEffect(Unit) { // Needed for the launch
-                        communicator.processResponses().collectIn(this@MainActivity) {
+                        communicator.processResponsesChannel().collectIn(this@MainActivity) {
                             delay(3000)
                             responseList.add(it)
-                            println("Response $it received")
+                            println("ResponseChannel $it received")
+                        }
+                        communicator.processResponsesFlow().collectIn(this@MainActivity) {
+                            delay(3000)
+                            responseList.add(it)
+                            println("ResponseFlow $it received")
                         }
                     }
                     App(modifier, responseList)

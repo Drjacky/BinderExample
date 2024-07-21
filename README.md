@@ -1,19 +1,19 @@
 # Binder Example 🤖
 
-This is a simple Android application demonstrating the usage of low-level binder communication with coroutines and channels.  
+This is a simple Android application demonstrating the usage of low-level binder communication with coroutines, flows and channels.  
 The app simulates reading data via a binder, processes responses, and updates the UI using Jetpack Compose.
 
 ## Features
 
 - **Low-Level Binder Communication**: Simulates reading responses from a binder.
-- **Coroutines and Channels**: Uses coroutines for background processing and channels for reactive data handling.
+- **Coroutines, Flows and Channels**: Uses coroutines for background processing and flows and channels for reactive data handling.
 - **Jetpack Compose UI**: Updates the UI with responses in real-time.
 - **Lifecycle-Aware Collection**: Ensures proper handling of responses based on the lifecycle of the activity.
 
 ## Architecture
 
 - **LowLevelBinder**: Simulates low-level binder communication by writing and reading data from parcels.
-- **Communicator**: Manages the binder communication and emits responses using a `Channel`.
+- **Communicator**: Manages the binder communication and emits responses using a `Channel` and a `Flow`.
 - **MainActivity**: The main activity that initializes the communicator, collects responses, and updates the UI.
 
 ## Getting Started
