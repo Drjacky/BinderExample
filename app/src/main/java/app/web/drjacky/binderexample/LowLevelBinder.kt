@@ -18,7 +18,8 @@ class LowLevelBinder {
         binder.transact(TRANSACTION_READ, data, reply, 0)
 
         // Simulate a delay in the response
-        Thread.sleep(2000)
+        val delay = randomDelay()
+        Thread.sleep(delay)
 
         // Simulate reading response from the Parcel
         val response = reply.readString()
@@ -28,7 +29,11 @@ class LowLevelBinder {
         data.recycle()
         reply.recycle()
 
-        return "$message-binder-$counter"
+        return "$message-binder-$counter | delayed: $delay"
+    }
+
+    private fun randomDelay(): Long {
+        return (1000..3000).random().toLong()
     }
 
     companion object {
