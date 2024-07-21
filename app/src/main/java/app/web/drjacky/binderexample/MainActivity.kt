@@ -27,12 +27,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import app.web.drjacky.binderexample.ui.theme.BinderExampleTheme
 import app.web.drjacky.binderexample.utils.collectIn
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.newSingleThreadContext
 
 class MainActivity : ComponentActivity() {
-    private val communicator = Communicator()
+    private val thread = newSingleThreadContext("MyThread")
+    private val communicator = Communicator(thread)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -45,12 +45,11 @@ class MainActivity : ComponentActivity() {
                     val responseList =
                         remember { mutableStateListOf<String>("Waiting for response...") }
 
-                    LaunchedEffect(Unit) { //Needed for the launch
-                        CoroutineScope(Dispatchers.Main).launch {
-                            communicator.processResponses().collectIn(this@MainActivity) {
-                                responseList.add(it)
-                                println("Response $it received")
-                            }
+                    LaunchedEffect(Unit) { // Needed for the launch
+                        communicator.processResponses().collectIn(this@MainActivity) {
+                            delay(3000)
+                            responseList.add(it)
+                            println("Response $it received")
                         }
                     }
                     App(modifier, responseList)
@@ -59,6 +58,7 @@ class MainActivity : ComponentActivity() {
         }
         communicator.start("First call")
         communicator.start("Second call")
+        communicator.start("Third call")
         communicator.shutdown()
     }
 }
