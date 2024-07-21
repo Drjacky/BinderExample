@@ -33,7 +33,7 @@ class LowLevelBinder {
     }
 
     private fun randomDelay(): Long {
-        return (1000..3000).random().toLong()
+        return (1000..6000).random().toLong()
     }
 
     companion object {
