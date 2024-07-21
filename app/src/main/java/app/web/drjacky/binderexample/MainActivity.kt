@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,6 +34,8 @@ import kotlinx.coroutines.newSingleThreadContext
 class MainActivity : ComponentActivity() {
     private val thread = newSingleThreadContext("MyThread")
     private val communicator = Communicator(thread)
+    private val totalResponses = 3
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -42,17 +45,19 @@ class MainActivity : ComponentActivity() {
                     modifier = modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val responseList =
-                        remember { mutableStateListOf<String>("") }
+                    val responsesCount = remember { mutableIntStateOf(0) }
+                    val responseList = remember { mutableStateListOf("") }
 
                     // Dynamic waiting message
                     LaunchedEffect(Unit) {
                         var dots = 1
-                        while (true) {
+                        while (responsesCount.intValue < 9) {
                             responseList[0] = "Waiting for response" + ".".repeat(dots)
                             dots = (dots % 3) + 1
                             delay(500)
                         }
+
+                        responseList.removeAt(0)
                     }
 
                     // Collect responses from communicator
@@ -61,6 +66,8 @@ class MainActivity : ComponentActivity() {
                             delay(3000)
                             responseList.add(it)
                             println("ResponseChannel $it received")
+                            responsesCount.intValue++
+                            println("responsesCount: ${responsesCount.intValue}")
                         }
                         communicator.processResponsesFlow().collectIn(this@MainActivity) {
                             delay(3000)
@@ -72,9 +79,9 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-        communicator.start("First call")
-        communicator.start("Second call")
-        communicator.start("Third call")
+        communicator.start("First call", totalResponses)
+        communicator.start("Second call", totalResponses)
+        communicator.start("Third call", totalResponses)
         communicator.shutdown()
     }
 }

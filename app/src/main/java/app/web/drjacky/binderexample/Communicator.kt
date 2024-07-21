@@ -20,7 +20,7 @@ class Communicator(private val thread: ExecutorCoroutineDispatcher) {
     )
 
 
-    fun start(message: String) {
+    fun start(message: String, totalResponses: Int) {
         println("Start called")
         CoroutineScope(thread).launch {
             var c = 1
@@ -29,7 +29,7 @@ class Communicator(private val thread: ExecutorCoroutineDispatcher) {
                 sendResponse("channelResponse: $response")
                 emitResponse("flowResponse: $response")
                 c += 1
-            } while (c <= 3)
+            } while (c <= totalResponses)
         }
 
     }
