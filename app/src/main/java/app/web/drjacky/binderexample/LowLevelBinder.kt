@@ -29,7 +29,7 @@ class LowLevelBinder {
         data.recycle()
         reply.recycle()
 
-        return "$message-binder-$counter | delayed: $delay"
+        return "$message-binder-$counter | delayed: ${delay}ms"
     }
 
     private fun randomDelay(): Long {

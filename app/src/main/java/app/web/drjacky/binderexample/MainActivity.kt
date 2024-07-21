@@ -35,6 +35,7 @@ class MainActivity : ComponentActivity() {
     private val thread = newSingleThreadContext("MyThread")
     private val communicator = Communicator(thread)
     private val totalResponses = 3
+    private val totalBinderCalls = 3
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,7 +52,7 @@ class MainActivity : ComponentActivity() {
                     // Dynamic waiting message
                     LaunchedEffect(Unit) {
                         var dots = 1
-                        while (responsesCount.intValue < 9) {
+                        while (responsesCount.intValue < (totalResponses * totalBinderCalls)) {
                             responseList[0] = "Waiting for response" + ".".repeat(dots)
                             dots = (dots % 3) + 1
                             delay(500)
@@ -79,9 +80,9 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-        communicator.start("First call", totalResponses)
-        communicator.start("Second call", totalResponses)
-        communicator.start("Third call", totalResponses)
+        (1..totalBinderCalls).forEach { i ->
+            communicator.start("Call #$i", totalResponses)
+        }
         communicator.shutdown()
     }
 }
